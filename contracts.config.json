@@ -1,0 +1,6 @@
+{
+  "typespec": "contracts/typespec/main.tsp",
+  "jsonSchema": "contracts/json-schema/contract.schema.json",
+  "out": "generated",
+  "target": "target/ores-contracts"
+}

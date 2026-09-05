@@ -1,0 +1,61 @@
+{
+  "contractVersion": "1.0.0",
+  "appId": "owl-fixture-dioxus",
+  "releaseId": "2026.09.05-4c5d6e7",
+  "framework": "dioxus",
+  "toolchain": "wasm-bindgen 0.2.95 / dioxus 0.6 (route chunks)",
+  "baseUrl": "/releases/owl-fixture-dioxus/2026.09.05-4c5d6e7/",
+  "requiresCrossOriginIsolation": false,
+  "entrypoints": [
+    {
+      "role": "glue",
+      "path": "app.js",
+      "contentType": "text/javascript",
+      "bytes": 52000,
+      "sha256": "152e7b00b7b3004d52f68e6102c4a1a19d39b7aa6c971ed3169acad0ece22812"
+    },
+    {
+      "role": "module",
+      "path": "app_bg.wasm",
+      "contentType": "application/wasm",
+      "bytes": 640000,
+      "sha256": "277a67092024c744ffa18ec65c45385f4a86061992361c5afbaac607810f5a09"
+    },
+    {
+      "role": "chunk",
+      "path": "chunks/app.wasm",
+      "contentType": "application/wasm",
+      "bytes": 210000,
+      "sha256": "d2cc0c6a9342884fc9434431ac7a587b4123383f752f6485d5f26a2892adcc22"
+    },
+    {
+      "role": "chunk",
+      "path": "chunks/reports.wasm",
+      "contentType": "application/wasm",
+      "bytes": 380000,
+      "sha256": "3473754009502da1e12796783943cd3a7ff6fb2379f41ede76b4b830c2cc9036"
+    }
+  ],
+  "assets": [
+    {
+      "path": "app.css",
+      "contentType": "text/css",
+      "bytes": 22000,
+      "sha256": "4ad45d8e783a2354a7b75805feb929fad539d7d55e0bb4ec2d9f4e61d3c0b5e9",
+      "stage": "critical"
+    }
+  ],
+  "prepare": {
+    "maxBytes": 3000000,
+    "maxConcurrency": 3,
+    "furthestStage": "compile"
+  },
+  "activation": {
+    "mode": "mount-route",
+    "hostSelector": "#dioxus-root",
+    "routes": {
+      "/app": "chunks/app.wasm",
+      "/app/reports": "chunks/reports.wasm"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "contractVersion": "1.0.0",
+  "appId": "owl-fixture-flutter",
+  "releaseId": "2026.09.05-f1a2b3c",
+  "framework": "flutter",
+  "toolchain": "flutter 3.35.1 (wasm)",
+  "baseUrl": "/releases/owl-fixture-flutter/2026.09.05-f1a2b3c/",
+  "requiresCrossOriginIsolation": true,
+  "entrypoints": [
+    {
+      "role": "bootstrap",
+      "path": "flutter_bootstrap.js",
+      "contentType": "text/javascript",
+      "bytes": 12288,
+      "sha256": "5c64aaa65dd7fdf78cc2fb14e8fc0f4833aecf44bb331e6d17038f650c781184"
+    },
+    {
+      "role": "module",
+      "path": "main.dart.wasm",
+      "contentType": "application/wasm",
+      "bytes": 2400000,
+      "sha256": "e857e1ed3c3da3f27f576b04da194368d6fad8308c5984a7e6345c84b178efc4"
+    },
+    {
+      "role": "glue",
+      "path": "main.dart.mjs",
+      "contentType": "text/javascript",
+      "bytes": 96000,
+      "sha256": "84cb5967a661accb75e942dd28b0cad8fb748397cabbb624c3e288612cfac862"
+    },
+    {
+      "role": "fallback",
+      "path": "main.dart.js",
+      "contentType": "text/javascript",
+      "bytes": 1800000,
+      "sha256": "ec218fcea21891bbff4bd508bc955ae1b5cce84be11bb1b7857cebee0ced62b1"
+    }
+  ],
+  "assets": [
+    {
+      "path": "assets/AssetManifest.bin.json",
+      "contentType": "application/json",
+      "bytes": 4096,
+      "sha256": "4422b0d641810599e43c8fe7d531aa89c7615bb52a16f10914010412dbd2b14c",
+      "stage": "critical"
+    },
+    {
+      "path": "assets/FontManifest.json",
+      "contentType": "application/json",
+      "bytes": 1024,
+      "sha256": "0153edf3ff9cf0c8010fb25ace434458af2a3b9b555c827a132308d385fb151b",
+      "stage": "critical"
+    },
+    {
+      "path": "assets/fonts/Placeholder.otf",
+      "contentType": "font/otf",
+      "bytes": 240000,
+      "sha256": "51bf39002dcde533ea03dce1702c73e36835158d0a6ff5c6ffa4ce2ab3b1c8f6",
+      "stage": "optional"
+    },
+    {
+      "path": "canvaskit/skwasm.wasm",
+      "contentType": "application/wasm",
+      "bytes": 900000,
+      "sha256": "cdc51df4272917ed0f5379420b66213e56e253368eecfeca1a103f65b53614d7",
+      "stage": "optional"
+    },
+    {
+      "path": "assets/help/onboarding.json",
+      "contentType": "application/json",
+      "bytes": 32000,
+      "sha256": "97f96737a27936e2ea65cc436d2f5bdc1559ac29ed388fb096230fcf35b67b5a",
+      "stage": "lazy"
+    }
+  ],
+  "prepare": {
+    "maxBytes": 6000000,
+    "maxConcurrency": 4,
+    "furthestStage": "fetch"
+  },
+  "activation": {
+    "mode": "attach-view",
+    "hostSelector": "#app-view"
+  }
+}

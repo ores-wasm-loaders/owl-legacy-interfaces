@@ -1,0 +1,41 @@
+[package]
+org = "ores-wasm-loaders"
+name = "owl-interfaces"
+version = "0.1.0"
+kind = "interfaces"
+language = "typescript"
+description = "ORES Wasm Loaders: the loader fleet's shared contract"
+license = "MIT"
+
+[package.repository]
+vcs = "git"
+url = "https://github.com/ores-wasm-loaders/owl-interfaces"
+
+[dependencies]
+"ORESoftware/ores-contracts" = "^0.1.0"
+
+[build]
+command = "node --test test/*.test.mjs"
+
+[publish]
+include_readme = true
+tag_format = "v{version}"
+exclude = [".env", ".env.*", ".vendor/**", ".zed/**", ".zed-pack/**", "tmp/**", "**/*.log", ".DS_Store", "**/target/**", "**/node_modules/**", "**/dist/**"]
+
+[install]
+dir = ".vendor/.zed"
+
+[targets.repository]
+dir = "."
+
+[targets.typescript]
+dir = "."
+name = "owl-interfaces"
+adapter = "node"
+[targets.contracts]
+dir = "contracts"
+name = "owl-interfaces-contracts"
+adapter = "none"
+
+[scripts]
+test = "node --test test/*.test.mjs"

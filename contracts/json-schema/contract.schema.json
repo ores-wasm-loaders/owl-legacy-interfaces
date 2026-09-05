@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ores-wasm-loaders/owl-interfaces/contracts/json-schema/contract.schema.json",
+  "title": "ORES Wasm Loaders — release registry",
+  "description": "Independent JSON Schema authority for the loader release registry. Peer of contracts/typespec/main.tsp; neither is generated from the other.",
+  "x-ores-namespace": "Ores.WasmLoaders",
+  "$defs": {
+    "LoaderFramework": {
+      "description": "Which loader adapter owns a release's lifecycle.",
+      "type": "string",
+      "enum": ["flutter", "leptos", "dioxus", "wasm-bindgen"]
+    },
+    "EntrypointRole": {
+      "description": "The role a file plays in a release's startup.",
+      "type": "string",
+      "enum": ["bootstrap", "glue", "module", "fallback", "chunk"]
+    },
+    "AssetStage": {
+      "description": "How eagerly an asset may be prepared before the visitor asks for the app.",
+      "type": "string",
+      "enum": ["critical", "optional", "lazy"]
+    },
+    "ActivationMode": {
+      "description": "What activation does once preparation is complete.",
+      "type": "string",
+      "enum": ["attach-view", "hydrate-islands", "mount-route", "run-app"]
+    },
+    "PrepareStage": {
+      "description": "How far preparation is permitted to go. Compilation is optional, never assumed.",
+      "type": "string",
+      "enum": ["fetch", "compile"]
+    },
+    "WasmRelease": {
+      "description": "One immutable published release of one application.",
+      "type": "object",
+      "additionalProperties": false,
+      "x-ores-table": "wasm_releases",
+      "x-ores-primary-key": ["id"],
+      "x-ores-unique": [["appId", "releaseId"]],
+      "x-ores-indexes": [["appId", "publishedAt"]],
+      "required": ["id", "appId", "releaseId", "framework", "toolchain", "contractVersion", "baseUrl", "requiresCrossOriginIsolation", "publishedAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "appId": { "description": "Stable application identifier, e.g. `gha-indie-worker-web`.", "type": "string", "maxLength": 128 },
+        "releaseId": { "description": "Immutable release identifier — also the CDN path segment.", "type": "string", "maxLength": 128 },
+        "framework": { "$ref": "#/$defs/LoaderFramework" },
+        "toolchain": { "description": "Toolchain that produced the build, e.g. `flutter 3.35.1` or `wasm-bindgen 0.2.95`.", "type": "string", "maxLength": 128 },
+        "contractVersion": { "description": "Version of this loader contract the manifest was written against.", "type": "string", "maxLength": 32 },
+        "baseUrl": { "description": "Absolute or origin-relative base URL of the immutable release directory.", "type": "string", "maxLength": 512 },
+        "requiresCrossOriginIsolation": { "description": "Flutter's threaded renderer needs cross-origin isolation — most releases do not.", "type": "boolean" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "supersededAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "WasmEntrypoint": {
+      "description": "A file a release needs at startup, in the role its build output gives it.",
+      "type": "object",
+      "additionalProperties": false,
+      "x-ores-table": "wasm_entrypoints",
+      "x-ores-primary-key": ["id"],
+      "x-ores-unique": [["releaseId", "path"]],
+      "x-ores-indexes": [],
+      "required": ["id", "releaseId", "role", "path", "contentType", "bytes", "sha256"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "releaseId": { "type": "string", "format": "uuid", "x-ores-references": "WasmRelease.id" },
+        "role": { "$ref": "#/$defs/EntrypointRole" },
+        "path": { "description": "Path relative to the release baseUrl.", "type": "string", "maxLength": 512 },
+        "contentType": { "type": "string", "maxLength": 128 },
+        "bytes": { "type": "integer", "x-ores-width": 64 },
+        "sha256": { "description": "Lowercase hex SHA-256 of the file as served.", "type": "string", "maxLength": 64 }
+      }
+    },
+    "WasmAsset": {
+      "description": "Any other asset of the release, tagged with how eagerly it may be prepared.",
+      "type": "object",
+      "additionalProperties": false,
+      "x-ores-table": "wasm_assets",
+      "x-ores-primary-key": ["id"],
+      "x-ores-unique": [["releaseId", "path"]],
+      "x-ores-indexes": [["releaseId", "stage"]],
+      "required": ["id", "releaseId", "path", "contentType", "bytes", "sha256", "stage"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "releaseId": { "type": "string", "format": "uuid", "x-ores-references": "WasmRelease.id" },
+        "path": { "type": "string", "maxLength": 512 },
+        "contentType": { "type": "string", "maxLength": 128 },
+        "bytes": { "type": "integer", "x-ores-width": 64 },
+        "sha256": { "type": "string", "maxLength": 64 },
+        "stage": { "$ref": "#/$defs/AssetStage" }
+      }
+    },
+    "WasmPreparePolicy": {
+      "description": "The budget and lifecycle a marketing page must respect for this release.",
+      "type": "object",
+      "additionalProperties": false,
+      "x-ores-table": "wasm_prepare_policies",
+      "x-ores-primary-key": ["id"],
+      "x-ores-unique": [["releaseId"]],
+      "x-ores-indexes": [],
+      "required": ["id", "releaseId", "maxPrepareBytes", "maxConcurrency", "furthestStage", "activation"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "releaseId": { "type": "string", "format": "uuid", "x-ores-references": "WasmRelease.id" },
+        "maxPrepareBytes": { "description": "Hard ceiling on bytes preparation may fetch for this release.", "type": "integer", "x-ores-width": 64 },
+        "maxConcurrency": { "description": "Maximum concurrent prepare requests for this release.", "type": "integer" },
+        "furthestStage": { "description": "Furthest stage preparation may reach.", "$ref": "#/$defs/PrepareStage" },
+        "activation": { "$ref": "#/$defs/ActivationMode" },
+        "hostSelector": { "description": "Element id or selector the app mounts into, when activation needs one.", "type": "string", "maxLength": 256 }
+      }
+    }
+  }
+}
