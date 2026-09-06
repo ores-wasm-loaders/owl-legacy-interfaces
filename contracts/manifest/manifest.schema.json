@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ores-wasm-loaders/owl-interfaces/contracts/manifest/manifest.schema.json",
+  "title": "owl-manifest.json",
+  "description": "The artifact every application publishes beside its build output and every loader reads. Generated from the emitted build graph by owl-manifest-tools.rs, never hand-written from conventional filenames.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contractVersion", "appId", "releaseId", "framework", "toolchain", "baseUrl", "entrypoints", "assets", "prepare", "activation"],
+  "properties": {
+    "contractVersion": { "description": "Loader contract this manifest was written against.", "type": "string", "const": "1.0.0" },
+    "appId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "releaseId": { "description": "Immutable release identifier and CDN path segment. Mixing releases is refused by the loader.", "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "framework": { "type": "string", "enum": ["flutter", "leptos", "dioxus", "wasm-bindgen"] },
+    "toolchain": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "baseUrl": { "description": "Origin-relative or absolute base of the immutable release directory. Must end with a slash.", "type": "string", "minLength": 1, "maxLength": 512, "pattern": "/$" },
+    "requiresCrossOriginIsolation": { "description": "True only for Flutter's multi-threaded renderer. Not a property of Wasm in general.", "type": "boolean", "default": false },
+    "entrypoints": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["role", "path", "contentType", "bytes", "sha256"],
+        "properties": {
+          "role": { "type": "string", "enum": ["bootstrap", "glue", "module", "fallback", "chunk"] },
+          "path": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "contentType": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "contentType", "bytes", "sha256", "stage"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "contentType": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "stage": { "type": "string", "enum": ["critical", "optional", "lazy"] }
+        }
+      }
+    },
+    "prepare": {
+      "description": "What a marketing page is allowed to do before the visitor asks for the application.",
+      "type": "object", "additionalProperties": false,
+      "required": ["maxBytes", "maxConcurrency", "furthestStage"],
+      "properties": {
+        "maxBytes": { "type": "integer", "minimum": 0 },
+        "maxConcurrency": { "type": "integer", "minimum": 1, "maximum": 16 },
+        "furthestStage": { "type": "string", "enum": ["fetch", "compile"] }
+      }
+    },
+    "activation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["attach-view", "hydrate-islands", "mount-route", "run-app"] },
+        "hostSelector": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "islands": { "description": "Leptos: island component names the release hydrates.", "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "routes": { "description": "Dioxus: route path -> entrypoint chunk path, as emitted by the framework's splitter.", "type": "object" }
+      }
+    }
+  }
+}

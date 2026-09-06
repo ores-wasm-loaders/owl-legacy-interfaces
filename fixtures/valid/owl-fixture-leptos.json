@@ -1,0 +1,54 @@
+{
+  "contractVersion": "1.0.0",
+  "appId": "owl-fixture-leptos",
+  "releaseId": "2026.09.05-9d8e7f6",
+  "framework": "leptos",
+  "toolchain": "wasm-bindgen 0.2.95 / leptos 0.7 (islands)",
+  "baseUrl": "/releases/owl-fixture-leptos/2026.09.05-9d8e7f6/",
+  "requiresCrossOriginIsolation": false,
+  "entrypoints": [
+    {
+      "role": "glue",
+      "path": "islands.js",
+      "contentType": "text/javascript",
+      "bytes": 48000,
+      "sha256": "afa29897c10825072484e9969855357e4a7a68912088f264943e8a5002e6c7a1"
+    },
+    {
+      "role": "module",
+      "path": "islands_bg.wasm",
+      "contentType": "application/wasm",
+      "bytes": 780000,
+      "sha256": "f3bf7acd159079b5af363d7b889fec2aac29abe49e1da7dd714b8fa383ab5eeb"
+    }
+  ],
+  "assets": [
+    {
+      "path": "islands.css",
+      "contentType": "text/css",
+      "bytes": 18000,
+      "sha256": "701bbb10e54904e7c2df20e76bd81a2a0ad84845ad15e6a0646b7a4eaed0d04d",
+      "stage": "critical"
+    },
+    {
+      "path": "snippets/status-ticker.js",
+      "contentType": "text/javascript",
+      "bytes": 6000,
+      "sha256": "6b3493b011b5bf0b9811cc32a512fbdbae81210d9cf07b252726a4b17380e500",
+      "stage": "optional"
+    }
+  ],
+  "prepare": {
+    "maxBytes": 2000000,
+    "maxConcurrency": 3,
+    "furthestStage": "compile"
+  },
+  "activation": {
+    "mode": "hydrate-islands",
+    "islands": [
+      "PricingCalculator",
+      "SignupWizard",
+      "StatusTicker"
+    ]
+  }
+}

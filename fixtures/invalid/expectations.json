@@ -1,0 +1,11 @@
+{
+  "unknown-property": "unexpected property",
+  "bad-digest": "does not match",
+  "absolute-path": "must be relative",
+  "budget-too-small": "cannot cover",
+  "wrong-activation": "cannot activate",
+  "islands-unnamed": "must name the islands",
+  "mutable-release-path": "addressable immutably",
+  "contract-version-drift": "expected \"1.0.0\"",
+  "flutter-compile-stage": "prepare fetch-only"
+}
